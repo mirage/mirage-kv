@@ -1,0 +1,12 @@
+language: c
+sudo: required
+install: wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-opam.sh
+script: bash -ex .travis-opam.sh
+env:
+  global:
+  - EXTRA_REMOTES="https://github.com/mirage/mirage-dev.git"
+  - PINS="mirage-kv.1.0.0:. mirage-kv-lwt.1.0.0:."
+  matrix:
+  - OCAML_VERSION=4.02 PACKAGE="mirage-kv-lwt"
+  - OCAML_VERSION=4.03 PACKAGE="mirage-kv-lwt"
+  - OCAML_VERSION=4.04 PACKAGE="mirage-kv-lwt"
