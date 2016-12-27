@@ -1,0 +1,21 @@
+opam-version: "1.2"
+maintainer:   "Thomas Gazagnaire <thomas@gazagnaire.org>"
+authors:      ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+homepage:     "https://github.com/samoht/mirage-kv"
+doc:          "https://samoht.github.io/mirage-kv/"
+license:      "ISC"
+dev-repo:     "https://github.com/samoht/mirage-kv.git"
+bug-reports:  "https://github.com/samoht/mirage-kv/issues"
+tags:         ["org:mirage"]
+
+build: ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" ]
+
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build}
+  "mirage-device"
+  "fmt"
+]
+
+available: [ ocaml-version >= "4.01.0"]

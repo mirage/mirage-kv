@@ -1,0 +1,7 @@
+description = "MirageOS signatures for key/value devices"
+version = "%%VERSION_NUM%%"
+requires = "mirage-device fmt"
+archive(byte) = "mirage-kv.cma"
+archive(native) = "mirage-kv.cmxa"
+plugin(byte) = "mirage-kv.cma"
+plugin(native) = "mirage-kv.cmxs"
