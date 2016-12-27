@@ -20,6 +20,8 @@
 
     {e %%VERSION%% } *)
 
+open Result
+
 (** {1 Mirage_kv} *)
 
 type error = [`Unknown_key of string]

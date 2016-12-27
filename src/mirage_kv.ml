@@ -16,6 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
+open Result
+
 type error = [`Unknown_key of string]
 
 let pp_error ppf = function
