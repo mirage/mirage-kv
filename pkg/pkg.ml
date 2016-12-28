@@ -14,7 +14,7 @@ let opams =
   in
   [
   opam ["lwt"; "mirage-kv"; "cstruct"; "result"] "opam";
-  opam ["fmt"; "mirage-device"; "result"] "mirage-fs-lwt.opam";
+  opam ["fmt"; "mirage-device"; "result"] "mirage-kv-lwt.opam";
   ]
 
 let () =
