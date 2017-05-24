@@ -1,3 +1,0 @@
-description = "MirageOS signatures for key-value devices"
-version = "%%VERSION_NUM%%"
-requires = "mirage-kv lwt cstruct"
