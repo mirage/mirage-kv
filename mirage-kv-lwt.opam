@@ -8,12 +8,13 @@ dev-repo:     "https://github.com/mirage/mirage-kv.git"
 bug-reports:  "https://github.com/mirage/mirage-kv/issues"
 tags:         ["org:mirage"]
 
-build: ["ocaml" "pkg/pkg.ml" "build" "-n" name "--pinned" "%{pinned}%" ]
+build: [
+  ["jbuilder" "subst"] {pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
 
 depends: [
-  "ocamlfind" {build}
-  "ocamlbuild" {build}
-  "topkg" {build & >= "0.8.0"}
+  "jbuilder" {build & >="1.0+beta7"}
   "mirage-kv" {>= "1.0.0"}
   "lwt"
   "cstruct" {>= "1.9.0"}
