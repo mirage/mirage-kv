@@ -14,7 +14,7 @@ build: [
 ]
 
 depends: [
-  "jbuilder" {build & >="1.0+beta7"}
+  "jbuilder" {build & >="1.0+beta10"}
   "mirage-device" {>= "1.0.0"}
   "fmt"
 ]

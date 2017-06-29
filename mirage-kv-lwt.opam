@@ -14,7 +14,7 @@ build: [
 ]
 
 depends: [
-  "jbuilder" {build & >="1.0+beta7"}
+  "jbuilder" {build & >="1.0+beta10"}
   "mirage-kv" {>= "1.0.0"}
   "lwt"
   "cstruct" {>= "1.9.0"}
