@@ -8,6 +8,8 @@ mirage-kv is distributed under the ISC license.
 [ro]: https://mirage.github.io/mirage-kv/Mirage_kv.html
 [ro-lwt]: https://mirage.github.io/mirage-kv/Mirage_kv_lwt.html
 
+[![Build Status](https://travis-ci.org/mirage/mirage-kv.svg?branch=master)](https://travis-ci.org/mirage/mirage-kv)
+
 ## Installation
 
 mirage-kv can be installed with `opam`:
