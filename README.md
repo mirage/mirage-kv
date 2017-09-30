@@ -5,8 +5,8 @@ signatures the MirageOS key/value devices should implement.
 
 mirage-kv is distributed under the ISC license.
 
-[ro]: https://mirage.github.io/mirage-kv/Mirage_kv.html
-[ro-lwt]: https://mirage.github.io/mirage-kv/Mirage_kv_lwt.html
+[ro]: http://docs.mirage.io/mirage-kv/Mirage_kv/module-type-RO/index.html
+[ro-lwt]: http://docs.mirage.io/mirage-kv-lwt/Mirage_kv_lwt/module-type-RO/index.html
 
 ## Installation
 
@@ -23,4 +23,4 @@ The documentation and API reference is generated from the source
 interfaces. It can be consulted [online][doc] or via `odig doc
 mirage-kv`.
 
-[doc]: https://mirage.github.io/mirage-kv/
+[doc]: http://docs.mirage.io/mirage-kv/
