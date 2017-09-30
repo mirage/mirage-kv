@@ -20,7 +20,9 @@ instructions.
 ## Documentation
 
 The documentation and API reference is generated from the source
-interfaces. It can be consulted [online][doc] or via `odig doc
-mirage-kv`.
+interfaces. API docs for both [mirage-kv][doc-mirage-kv] and
+[mirage-kv-lwt][doc-mirage-kv-lwt] can be consulted online or via `odig
+doc mirage-kv`.
 
-[doc]: http://docs.mirage.io/mirage-kv/
+[doc-mirage-kv]: http://docs.mirage.io/mirage-kv/
+[doc-mirage-kv-lwt]: http://docs.mirage.io/mirage-kv-lwt/
