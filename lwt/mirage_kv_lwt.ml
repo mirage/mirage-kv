@@ -1,4 +1,5 @@
 (*
+ * Copyright (c) 2018      Stefanie Schirmer, Hannes Mehnert
  * Copyright (c) 2011-2015 Anil Madhavapeddy <anil@recoil.org>
  * Copyright (c) 2013-2015 Thomas Gazagnaire <thomas@gazagnaire.org>
  * Copyright (c) 2013      Citrix Systems Inc
@@ -22,4 +23,4 @@
 
 module type RO = Mirage_kv.RO
   with type 'a io = 'a Lwt.t
-   and type page_aligned_buffer = Cstruct.t
+   and type buffer = Cstruct.t

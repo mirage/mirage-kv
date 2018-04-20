@@ -1,4 +1,5 @@
 (*
+ * Copyright (c) 2018      Stefanie Schirmer, Hannes Mehnert
  * Copyright (c) 2011-2015 Anil Madhavapeddy <anil@recoil.org>
  * Copyright (c) 2013-2015 Thomas Gazagnaire <thomas@gazagnaire.org>
  * Copyright (c) 2013      Citrix Systems Inc
@@ -38,14 +39,15 @@ module type RO = sig
 
   include Mirage_device.S
 
-  type page_aligned_buffer
-  (** The type for memory buffers.*)
+  type buffer
+  (** The type for memory buffer.*)
 
-  val read: t -> string -> int64 -> int64 ->
-    (page_aligned_buffer list, error) result io
-  (** [read t key offset length] reads up to [length] bytes from the
-      value associated with [key]. If less data is returned than
-      requested, this indicates the end of the value. *)
+  val read: t -> string -> ?offset:int64 -> ?length:int64 ->
+    (buffer, error) result io
+  (** [read t key ~offset ~length] reads up to [length] bytes from the value
+      associated with [key] starting at [offset] (defaults to 0).  If [length]
+      is not given, the end of value is used.  If [offset + length] is longer
+      than the [value], we return what we can. *)
 
   val mem: t -> string -> (bool, error) result io
   (** [mem t key] returns [true] if a value is set for [key] in [t],
