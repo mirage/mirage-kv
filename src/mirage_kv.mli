@@ -50,10 +50,9 @@ module type RO = sig
       than the [value], we return what we can. *)
 
   val mem: t -> string -> (bool, error) result io
-  (** [mem t key] returns [true] if a value is set for [key] in [t],
-      and [false] if not so. *)
+  (** [mem t key] returns whether a value is set for [key] in [t]. *)
 
   val size: t -> string -> (int64, error) result io
-  (** Get the value size. *)
+  (** [size t key] returns the size of the value [key] in [t]. *)
 
 end
