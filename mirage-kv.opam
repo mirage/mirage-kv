@@ -18,6 +18,7 @@ depends: [
   "dune"     {build}
   "mirage-device" {>= "1.0.0"}
   "fmt"
+  "alcotest" {test}
 ]
 
 synopsis: "MirageOS signatures for key/value devices"

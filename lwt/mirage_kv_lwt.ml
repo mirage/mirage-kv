@@ -22,4 +22,8 @@
 
 module type RO = Mirage_kv.RO
   with type 'a io = 'a Lwt.t
-   and type page_aligned_buffer = Cstruct.t
+   and type buffer = string
+
+module type RW = Mirage_kv.RW
+  with type 'a io = 'a Lwt.t
+   and type buffer = string
