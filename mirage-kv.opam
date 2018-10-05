@@ -16,11 +16,10 @@ build-test: [
   ["dune" "runtest" "-p" name]
 ]
 depends: [
-  "ocaml" {>= "4.03.0"}
+  "ocaml" {>= "4.05.0"}
   "dune"     {build}
   "mirage-device" {>= "1.0.0"}
   "fmt"
   "alcotest" {test}
 ]
-
 synopsis: "MirageOS signatures for key/value devices"
