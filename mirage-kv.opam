@@ -9,12 +9,12 @@ bug-reports:  "https://github.com/mirage/mirage-kv/issues"
 tags:         ["org:mirage"]
 
 build: [
-  ["jbuilder" "subst"] {pinned}
-  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
 ]
 
 depends: [
-  "jbuilder" {build & >="1.0+beta10"}
+  "dune"     {build}
   "mirage-device" {>= "1.0.0"}
   "fmt"
 ]

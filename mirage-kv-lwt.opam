@@ -9,15 +9,15 @@ bug-reports:  "https://github.com/mirage/mirage-kv/issues"
 tags:         ["org:mirage"]
 
 build: [
-  ["jbuilder" "subst"] {pinned}
-  ["jbuilder" "build" "-p" name "-j" jobs]
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "-p" name "-j" jobs]
 ]
 
 depends: [
-  "jbuilder" {build & >="1.0+beta10"}
+  "dune"      {build}
   "mirage-kv" {>= "1.0.0"}
   "lwt"
-  "cstruct" {>= "1.9.0"}
+  "cstruct"
 ]
 
 available: [ ocaml-version >= "4.01.0"]
