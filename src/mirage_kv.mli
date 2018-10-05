@@ -22,89 +22,85 @@
 
 (** {1 Mirage_kv} *)
 
+(** MirageOS key-value stores are nested dictionaries, associating
+   structured {{!Key}keys} to either dictionaries or values. *)
+
 type error = [
-  | `Not_found  of string
-  | `Is_a_tree  of string
-  | `Not_a_tree of string
+  | `Not_found           of string (** key not found *)
+  | `Dictionary_expected of string (** key does not refer to a dictionary. *)
+  | `Value_expected      of string (** key does not refer to a value. *)
 ]
 (** The type for errors. *)
 
 val pp_error: error Fmt.t
 (** [pp_error] is the pretty-printer for errors. *)
 
-module Path: sig
+module Key: sig
+
+  (** {1 Structured keys} *)
 
   type t
-  (** The type for paths. *)
+  (** The type for structured keys. *)
+
+  val empty: t
+  (** [empty] is the empty key. It refers to the top-level
+     dictionary. *)
 
   val v : string -> t
-  (** [v s] is the string [s] as a path. *)
+  (** [v s] is the string [s] as a key. A key ["/foo/bar"] is
+     decomposed into the segments ["foo"] and ["bar"]. The initial
+     ["/"] is always ignored so ["foo/bar"] and ["/foo/bar"] are
+     equal. *)
 
-  val add_seg : t -> string -> t
-  (** [add_seg t s] is the path [t/s] *)
+  val add : t -> string -> t
+  (** [add t s] is the concatenated key [t/s]. Raise
+     [Invalid_argument] if [s] contains ["/"]. *)
 
   val ( / ) : t -> string -> t
-  (** [t / x] is [add_seg t x]. *)
+  (** [t / x] is [add t x]. *)
 
   val append : t -> t -> t
-  (** [append x y] is the path [x / y]. *)
+  (** [append x y] is the concatenated key [x/y]. *)
 
   val ( // ) : t -> t -> t
   (** [x // y] is [append x y]. *)
 
-  val segs : t-> string list
-  (** [segs t] is [t]'s list of segments. *)
+  val segments : t-> string list
+  (** [segments t] is [t]'s list of segments. *)
 
   val basename : t -> string
-  (** [basename t] is the last non-empty segment of [t]. *)
+  (** [basename t] is the last segment of [t]. [basename empty] is
+     the empty string [""]. *)
 
   val parent : t -> t
-  (** [parent t] is a directory path that contains [t]. *)
+  (** [parent t] is the key without the last segment. [parent empty]
+     is [empty].
+
+      For any [t], the invariant have [parent t / basename t] is [t].
+     *)
 
   val compare : t-> t -> int
-  (** The comparison function for paths. *)
+  (** The comparison function for keys. *)
 
   val equal : t -> t -> bool
-  (** The equality function for paths. *)
+  (** The equality function for keys. *)
 
   val pp : t Fmt.t
-  (** The pretty printer for paths. *)
+  (** The pretty printer for keys. *)
 
   val to_string: t -> string
-  (** [to_string] is [Fmt.to_to_string pp]. *)
-
-  val get_ext : t -> string
-  (** [get_ext t] is [t]'s basename file extension. *)
-
-  val has_ext : string -> t -> bool
-  (** [has_ext e t] is [true] iff [get_ext t = e] *)
-
-  val add_ext : string -> t -> t
-  (** [add_ext e t] is [t] with the string [e] concatenated to [t]'s
-     basename. *)
-
-  val rem_ext : t -> t
-  (** [rem_ext t] is [t] with the extension of [t]'s basename
-     removed. *)
-
-  val set_ext : string -> t -> t
-  (** [set_ext e t] is [add_ext e (rem_ext t)]. *)
-
-  val ( + ) : t -> string -> t
-  (** [t + e] is [add_ext e t]. *)
+  (** [to_string t] is the string representation of [t]. ["/"] is used
+     as separator between segements and it always starts with
+     ["/"]. *)
 
 end
 
-type path = Path.t
-(** The type for store paths. *)
+type key = Key.t
+(** The type for keys. *)
 
 module type RO = sig
 
-  (** {1 Read-only, key-value stores} *)
-
-  (** MirageOS read-only key-value stores are read-only tree-like structures
-      holding buffers on their leaves. The functions in [RO] allow to distinguish
-      between intermediate and leafs nodes. *)
+  (** {1 Read-only key-value stores} *)
 
   type nonrec error = private [> error]
   (** The type for errors. *)
@@ -114,44 +110,44 @@ module type RO = sig
 
   include Mirage_device.S
 
-  type buffer
-  (** The type for memory buffers.*)
+  type value
+  (** The type for values. *)
 
-  val mem: t -> path -> (bool, error) result io
-  (** [mem t p] is [true] iff a buffer is bound t [p] in [t]. *)
+ val exists: t -> key -> [`Value | `Dictionary] option io
+ (** [exists t k] is [Some `Value] if [k] is bound to a value in [t],
+    [Some `Dictionary] if [k] is a prefix of a valid key in [t] and
+    [None] if no key with that prefix exists in [t]. *)
 
-  val mem_tree: t -> path -> bool io
-  (** [mem_tree t p] is [true] iff there exists a tree bound the path
-     [p]. This means there exists a buffer bound to a path [p'] in
-     [t], such that [p'] is a prefix of [p]. *)
+ val get: t -> key -> (value, error) result io
+ (** [get t k] is the value bound to [k] in [t]. *)
 
- val get: t -> ?off:int64 -> ?len:int64 -> path -> (buffer, error) result io
-  (** [get t ?off ?len p] is a view of the buffer bound to [p] in [t].
-     By default, [off] is 0 and [len] is the length of the buffer less
-     [off]. *)
+  val list: t -> key -> (string * [`Value | `Dictionary]) list io
+  (** [list t k] is the list of entries and their types in the
+     dictionary referenced by [k] in [t]. *)
 
- val kind: t -> path -> [`Buffer | `Tree] option io
-  (** [kind t p] is [Some `Buffer] if [p] is bound to a buffer in [t],
-     [Some `Tree] if [p] is a prefix of the valid key in [t] and
-     [None] if no key with that prefix exists in [t]. *)
+  val last_modified: t -> key -> (int * int64, error) result io
+  (** [last_modified t k] is the last time the value bound to [k] in
+     [t] has been modified.
 
-  val list: t -> path -> (string * [`Buffer | `Tree]) list io
-  (** [list t p] is the list of entries (with their kind) in the tree
-     bound to [p]. *)
+      The modification time [(d, ps)] is a span for the signed POSIX
+     picosecond span [d] * 86_400e12 + [ps]. [d] is a signed number of
+     POSIX days and [ps] a number of picoseconds in the range
+     \[[0];[86_399_999_999_999_999L]\].
 
-  val size: t -> path -> (int64, error) result io
-  (** [size t p] is the size of the buffer bound to [p] in [t]. *)
+      When the value bound to [k] is a dictionary, the modification
+     time is the latest modification of all entries in that
+     dictionary.  *)
 
-  val mtime: t -> path -> (int64, error) result io
-  (** [mtime t p] is the last time the value bound to [p] in [t] has
-     been modified. *)
+  val digest: t -> key -> (string, error) result io
+  (** [digest t k] is the unique digest of the value bound to [k] in
+     [t].
 
-  val digest: t -> path -> (string, error) result io
-  (** [digest t p] is the digest of the value bound to [p] int [t]. *)
+      When the value bound to [k] is a dictionary, the digest is a
+     unique and deterministic digest of its entries. *)
 
 end
 
-type write_error = error
+type write_error = [ error | `No_space ]
 
 module type RW = sig
 
@@ -163,12 +159,11 @@ module type RW = sig
   val pp_write_error: write_error Fmt.t
   (** The pretty-printer for [pp_write_error]. *)
 
-  val set: t ->  ?off:int64 -> ?len:int64 -> path -> buffer ->
-    (unit, write_error) result io
-  (** [set t p v] adds the binding [p -> v] to [t]. *)
+  val set: t -> key -> value -> (unit, write_error) result io
+  (** [set t k v] replaces the binding [k -> v] in [t]. *)
 
-  val remove: t -> path -> (unit, write_error) result io
-  (** [remove t p] remove binding to [p] in [t]. If [p] was bound to a
-     tree, the full tree will be removed. *)
+  val remove: t -> key -> (unit, write_error) result io
+  (** [remove t k] removes any binding of [k] in [t]. If [k] was bound
+     to a dictionary, the full dictionary will be removed. *)
 
 end

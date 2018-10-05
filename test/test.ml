@@ -1,43 +1,43 @@
 open Mirage_kv
 
-let path = Alcotest.testable Path.pp Path.equal
+let key = Alcotest.testable Key.pp Key.equal
 
 let path_v () =
-  let check s =  Alcotest.(check string) s s Path.(to_string @@ v s) in
-  check "/foo/bar";
-  check "/foo";
-  check "/";
-  check "foo/bar";
-  check ""
+  let check s e =  Alcotest.(check string) s e Key.(to_string @@ v s) in
+  check "/foo/bar" "/foo/bar";
+  check "/foo"     "/foo";
+  check "/"        "/";
+  check "foo/bar"  "/foo/bar";
+  check ""         "/"
 
-let path_add_seg () =
-  let check t e =
-    let f = t ^ "/" ^ e in
-    let vt = Path.v t in
-    Alcotest.(check string) f f Path.(to_string @@ vt / e);
-    Alcotest.(check path) f vt Path.(parent @@ vt / e);
-    Alcotest.(check string) f e Path.(basename @@ vt / e)
+let path_add () =
+  let check p b exp =
+    let f = p ^ "/" ^ b in
+    let vp = Key.v p in
+    Alcotest.(check string) f exp Key.(to_string @@ vp / b);
+    Alcotest.(check key)    f vp  Key.(parent @@ vp / b);
+    Alcotest.(check string) f b   Key.(basename @@ vp / b)
   in
-  check ""         "bar";
-  check "/"        "foo";
-  check "/foo"     "bar";
-  check "/foo/bar" "toto"
+  check ""         "bar"  "/bar";
+  check "/"        "foo"  "/foo";
+  check "/foo"     "bar"  "/foo/bar";
+  check "/foo/bar" "toto" "/foo/bar/toto"
 
 let path_append () =
   let check x y =
     let f = x ^ "/" ^ y in
-    let vf = Path.v f in
-    Alcotest.(check path) f vf Path.(v x // v y);
-    Alcotest.(check string) x Path.(basename vf) Path.(basename @@ v y)
+    let vf = Key.v f in
+    Alcotest.(check key)    f vf                Key.(v x // v y);
+    Alcotest.(check string) x Key.(basename vf) Key.(basename @@ v y)
   in
-  check ""         "foo/bar";
+  check ""         "/foo/bar";
   check "/foo"     "bar";
-  check "/foo/bar" "toto/foox/ko"
+  check "/foo/bar" "/toto/foox/ko"
 
 let () = Alcotest.run "mirage-kv" [
     "path", [
       "Path.v"      , `Quick, path_v;
-      "Path.add_seg", `Quick, path_add_seg;
+      "Path.add_seg", `Quick, path_add;
       "Path.append" , `Quick, path_append;
     ]
   ]

@@ -17,81 +17,57 @@
  *)
 
 type error = [
-  | `Not_found  of string
-  | `Is_a_tree  of string
-  | `Not_a_tree of string
+  | `Not_found           of string
+  | `Dictionary_expected of string
+  | `Value_expected      of string
 ]
 
 let pp_error ppf = function
-  | `Not_found k  -> Fmt.pf ppf "Cannot find %s" k
-  | `Is_a_tree k  -> Fmt.pf ppf "%s is a tree" k
-  | `Not_a_tree k -> Fmt.pf ppf "%s is not a tree" k
+  | `Not_found k           -> Fmt.pf ppf "Cannot find the key %s" k
+  | `Dictionary_expected k -> Fmt.pf ppf "Expecting a dictionary for the key %s" k
+  | `Value_expected k      -> Fmt.pf ppf "Expecting a value for the key %s" k
 
-module Path = struct
+module Key = struct
 
   type t = string list
   (* Store the path as a reverse list to optimise basename and (/)
      operations *)
 
-  let v s = List.rev (String.split_on_char '/' s)
-  let add_seg t v = v :: t
-  let ( / ) = add_seg
+  let empty = []
+  let v s = List.filter ((<>)"") @@ List.rev (String.split_on_char '/' s)
+  let add t v = v :: t
+  let ( / ) = add
   let append x y = y @ x
   let ( // ) = append
-  let segs = List.rev
+  let segments = List.rev
   let basename = List.hd
   let parent = List.tl
   let compare = compare
   let equal = (=)
-  let pp ppf l = Fmt.(list ~sep:(unit "/") string) ppf (List.rev l)
+  let pp ppf l = Fmt.pf ppf "/%a" Fmt.(list ~sep:(unit "/") string) (List.rev l)
   let to_string = Fmt.to_to_string pp
-
-  let get_ext = function
-    | []   -> ""
-    | h::_ -> Filename.extension h
-
-  let has_ext e = function
-    | []   -> false
-    | h::_ -> e = Filename.extension h
-
-  let add_ext e = function
-    | []   -> []
-    | h::t -> (h ^ "." ^ e) :: t
-
-  let rem_ext = function
-    | []   -> []
-    | h::t -> Filename.remove_extension h :: t
-
-  let set_ext e t = add_ext e (rem_ext t)
-
-  let ( + ) t e = add_ext e t
-
 end
 
-type path = Path.t
+type key = Key.t
 
 module type RO = sig
   type nonrec error = private [> error]
   val pp_error: error Fmt.t
   include Mirage_device.S
-  type buffer
-  val mem: t -> path -> (bool, error) result io
-  val mem_tree: t -> path -> bool io
-  val get: t -> ?off:int64 -> ?len:int64 -> path -> (buffer, error) result io
-  val kind: t -> path -> [`Buffer | `Tree] option io
-  val list: t -> path -> (string * [`Buffer | `Tree]) list io
-  val size: t -> path -> (int64, error) result io
-  val mtime: t -> path -> (int64, error) result io
-  val digest: t -> path -> (string, error) result io
+  type value
+  val exists: t -> key -> [`Value | `Dictionary] option io
+  val get: t -> key -> (value, error) result io
+  val list: t -> key -> (string * [`Value | `Dictionary]) list io
+  val last_modified: t -> key -> (int * int64, error) result io
+  val digest: t -> key -> (string, error) result io
 end
 
-type write_error = error
+type write_error = [ error | `No_space ]
 
 module type RW = sig
   include RO
   type nonrec write_error = private [> write_error]
   val pp_write_error: write_error Fmt.t
-  val set: t -> ?off:int64 -> ?len:int64 -> path -> buffer ->
-    (unit, write_error) result io
-  val remove: t -> path -> (unit, write_error) result io
+  val set: t -> key -> value -> (unit, write_error) result io
+  val remove: t -> key -> (unit, write_error) result io
 end

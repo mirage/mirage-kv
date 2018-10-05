@@ -22,8 +22,8 @@
 
 module type RO = Mirage_kv.RO
   with type 'a io = 'a Lwt.t
-   and type buffer = string
+   and type value = string
 
 module type RW = Mirage_kv.RW
   with type 'a io = 'a Lwt.t
-   and type buffer = string
+   and type value = string
