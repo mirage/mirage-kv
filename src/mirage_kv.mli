@@ -152,9 +152,21 @@ module type RO = sig
 
 end
 
-type write_error = [ error | `No_space ]
+type write_error = [
+  | error
+  | `No_space  (** No space left on the device. *)
+]
 
 module type RW = sig
+
+  (** {1 Read-write Stores} *)
+
+  (** There is a trade-off between durability and performance. If you
+     want performance, use the {!batch} operation with a chain of sets
+     and removes. They will be applied on the underlying storage layer
+     all at once. Otherwise {!set} and {!remove} will cause a flush in
+     the underlying storage layer every time, which could degrade
+     performance. *)
 
   include RO
 
@@ -165,10 +177,26 @@ module type RW = sig
   (** The pretty-printer for [pp_write_error]. *)
 
   val set: t -> key -> value -> (unit, write_error) result io
-  (** [set t k v] replaces the binding [k -> v] in [t]. *)
+  (** [set t k v] replaces the binding [k -> v] in [t].
+
+      Durability is guaranteed unless [set] is run inside an enclosing
+     {!batch} operation, where durability will be guaranteed at the
+     end of the batch. *)
 
   val remove: t -> key -> (unit, write_error) result io
   (** [remove t k] removes any binding of [k] in [t]. If [k] was bound
-     to a dictionary, the full dictionary will be removed. *)
+     to a dictionary, the full dictionary will be removed.
+
+      Durability is guaranteed unless [remove] is run inside an
+     enclosing {!batch} operation, where durability will be guaranteed
+     at the end of the batch. *)
+
+  val batch: t -> (t -> 'a) -> 'a
+  (** [batch t f] run [f] in batch. Ensure the durability of
+     operations.
+
+      Since a batch is applied at once, the readings inside a batch
+     will return the state before the entire batch. Concurrent
+     operations will not affect other ones executed during the batch. *)
 
 end
