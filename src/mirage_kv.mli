@@ -113,10 +113,15 @@ module type RO = sig
   type value
   (** The type for values. *)
 
- val exists: t -> key -> ([`Value | `Dictionary], error) result io
+ val exists: t -> key -> ([`Value | `Dictionary] option, error) result io
  (** [exists t k] is [Some `Value] if [k] is bound to a value in [t],
     [Some `Dictionary] if [k] is a prefix of a valid key in [t] and
-    [None] if no key with that prefix exists in [t]. *)
+    [None] if no key with that prefix exists in [t].
+
+     {!exists} answers two questions: does the key exist and is it
+    referring to a value or a dictionary.
+
+     An error occurs when the underlying storage layer fails. *)
 
  val get: t -> key -> (value, error) result io
  (** [get t k] is the value bound to [k] in [t]. *)

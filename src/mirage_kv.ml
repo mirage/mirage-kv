@@ -63,7 +63,7 @@ module type RO = sig
   val pp_error: error Fmt.t
   include Mirage_device.S
   type value
-  val exists: t -> key -> ([`Value | `Dictionary], error) result io
+  val exists: t -> key -> ([`Value | `Dictionary] option, error) result io
   val get: t -> key -> (value, error) result io
   val list: t -> key -> ((string * [`Value | `Dictionary]) list, error) result io
   val last_modified: t -> key -> (int * int64, error) result io
