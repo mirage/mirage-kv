@@ -18,10 +18,17 @@ let path_add () =
     Alcotest.(check key)    f vp  Key.(parent @@ vp / b);
     Alcotest.(check string) f b   Key.(basename @@ vp / b)
   in
+  let check_exn p b =
+    try
+      let _ = Key.(v p / b) in
+      Alcotest.failf "%s is not a valid segment, should fail" b
+    with Failure _ -> ()
+  in
   check ""         "bar"  "/bar";
   check "/"        "foo"  "/foo";
   check "/foo"     "bar"  "/foo/bar";
-  check "/foo/bar" "toto" "/foo/bar/toto"
+  check "/foo/bar" "toto" "/foo/bar/toto";
+  check_exn "" "foo/bar"
 
 let path_append () =
   let check x y =

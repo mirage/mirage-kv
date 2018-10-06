@@ -22,9 +22,15 @@ module Key = struct
   (* Store the path as a reverse list to optimise basename and (/)
      operations *)
 
+  let err_invalid_segment x = Fmt.failwith "%S is not a valid segment" x
+
+  let check_segment x =
+    String.iter (function '/' -> err_invalid_segment x | _ -> ()) x;
+    x
+
   let empty = []
   let v s = List.filter ((<>)"") @@ List.rev (String.split_on_char '/' s)
-  let add t v = v :: t
+  let add t v = (check_segment v) :: t
   let ( / ) = add
   let append x y = y @ x
   let ( // ) = append
