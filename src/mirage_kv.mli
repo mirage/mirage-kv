@@ -127,11 +127,17 @@ module type RO = sig
      An error occurs when the underlying storage layer fails. *)
 
  val get: t -> key -> (value, error) result io
- (** [get t k] is the value bound to [k] in [t]. *)
+ (** [get t k] is the value bound to [k] in [t].
+
+     The result is [Error (`Value_expected k)] if [k] refers to a
+    dictionary in [t]. *)
 
   val list: t -> key -> ((string * [`Value | `Dictionary]) list, error) result io
   (** [list t k] is the list of entries and their types in the
-     dictionary referenced by [k] in [t]. *)
+     dictionary referenced by [k] in [t].
+
+      The result is [Error (`Dictionary_expected k)] if [k] refers to a
+     value in [t]. *)
 
   val last_modified: t -> key -> (int * int64, error) result io
   (** [last_modified t k] is the last time the value bound to [k] in
@@ -157,7 +163,8 @@ end
 
 type write_error = [
   | error
-  | `No_space  (** No space left on the device. *)
+  | `No_space         (** No space left on the device. *)
+  | `Too_many_retries (** {!batch} commit failed with too many retries. *)
 ]
 
 module type RW = sig
@@ -194,12 +201,18 @@ module type RW = sig
      enclosing {!batch} operation, where durability will be guaranteed
      at the end of the batch. *)
 
-  val batch: t -> (t -> 'a) -> 'a
+  val batch: t -> ?retries:int -> (t -> 'a) -> 'a
   (** [batch t f] run [f] in batch. Ensure the durability of
      operations.
 
       Since a batch is applied at once, the readings inside a batch
      will return the state before the entire batch. Concurrent
-     operations will not affect other ones executed during the batch. *)
+     operations will not affect other ones executed during the batch.
+
+      Batch applications can fail to apply if other operations are
+     happening concurrently. In case of failure, [f] will run again
+     with the most recent version of [t]. The result is [Error
+     `Too_many_retries] if [f] is run for more then [retries] attemps
+     (default is [13]). *)
 
 end

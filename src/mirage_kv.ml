@@ -71,7 +71,7 @@ module type RO = sig
   val digest: t -> key -> (string, error) result io
 end
 
-type write_error = [ error | `No_space ]
+type write_error = [ error | `No_space | `Too_many_retries ]
 
 module type RW = sig
   include RO
@@ -79,5 +79,5 @@ module type RW = sig
   val pp_write_error: write_error Fmt.t
   val set: t -> key -> value -> (unit, write_error) result io
   val remove: t -> key -> (unit, write_error) result io
-  val batch: t -> (t -> 'a) -> 'a
+  val batch: t -> ?retries:int -> (t -> 'a) -> 'a
 end
