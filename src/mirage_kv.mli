@@ -113,7 +113,7 @@ module type RO = sig
   type value
   (** The type for values. *)
 
- val exists: t -> key -> [`Value | `Dictionary] option io
+ val exists: t -> key -> ([`Value | `Dictionary], error) result io
  (** [exists t k] is [Some `Value] if [k] is bound to a value in [t],
     [Some `Dictionary] if [k] is a prefix of a valid key in [t] and
     [None] if no key with that prefix exists in [t]. *)
@@ -121,7 +121,7 @@ module type RO = sig
  val get: t -> key -> (value, error) result io
  (** [get t k] is the value bound to [k] in [t]. *)
 
-  val list: t -> key -> (string * [`Value | `Dictionary]) list io
+  val list: t -> key -> ((string * [`Value | `Dictionary]) list, error) result io
   (** [list t k] is the list of entries and their types in the
      dictionary referenced by [k] in [t]. *)
 
