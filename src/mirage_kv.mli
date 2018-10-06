@@ -25,16 +25,6 @@
 (** MirageOS key-value stores are nested dictionaries, associating
    structured {{!Key}keys} to either dictionaries or values. *)
 
-type error = [
-  | `Not_found           of string (** key not found *)
-  | `Dictionary_expected of string (** key does not refer to a dictionary. *)
-  | `Value_expected      of string (** key does not refer to a value. *)
-]
-(** The type for errors. *)
-
-val pp_error: error Fmt.t
-(** [pp_error] is the pretty-printer for errors. *)
-
 module Key: sig
 
   (** {1 Structured keys} *)
@@ -97,6 +87,16 @@ end
 
 type key = Key.t
 (** The type for keys. *)
+
+type error = [
+  | `Not_found           of key (** key not found *)
+  | `Dictionary_expected of key (** key does not refer to a dictionary. *)
+  | `Value_expected      of key (** key does not refer to a value. *)
+]
+(** The type for errors. *)
+
+val pp_error: error Fmt.t
+(** [pp_error] is the pretty-printer for errors. *)
 
 module type RO = sig
 

@@ -16,17 +16,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-type error = [
-  | `Not_found           of string
-  | `Dictionary_expected of string
-  | `Value_expected      of string
-]
-
-let pp_error ppf = function
-  | `Not_found k           -> Fmt.pf ppf "Cannot find the key %s" k
-  | `Dictionary_expected k -> Fmt.pf ppf "Expecting a dictionary for the key %s" k
-  | `Value_expected k      -> Fmt.pf ppf "Expecting a value for the key %s" k
-
 module Key = struct
 
   type t = string list
@@ -49,6 +38,19 @@ module Key = struct
 end
 
 type key = Key.t
+
+type error = [
+  | `Not_found           of key
+  | `Dictionary_expected of key
+  | `Value_expected      of key
+]
+
+let pp_error ppf = function
+  | `Not_found k           -> Fmt.pf ppf "Cannot find the key %a" Key.pp k
+  | `Dictionary_expected k ->
+    Fmt.pf ppf "Expecting a dictionary for the key %a" Key.pp k
+  | `Value_expected k      ->
+    Fmt.pf ppf "Expecting a value for the key %a" Key.pp k
 
 module type RO = sig
   type nonrec error = private [> error]
