@@ -62,6 +62,7 @@ module type RO = sig
   type nonrec error = private [> error]
   val pp_error: error Fmt.t
   include Mirage_device.S
+  type key = Key.t
   type value
   val exists: t -> key -> ([`Value | `Dictionary] option, error) result io
   val get: t -> key -> (value, error) result io

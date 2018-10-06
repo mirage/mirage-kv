@@ -110,6 +110,9 @@ module type RO = sig
 
   include Mirage_device.S
 
+  type key = Key.t
+  (** The type for keys. *)
+
   type value
   (** The type for values. *)
 
