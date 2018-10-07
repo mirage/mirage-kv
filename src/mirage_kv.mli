@@ -163,9 +163,13 @@ end
 
 type write_error = [
   | error
-  | `No_space         (** No space left on the device. *)
-  | `Too_many_retries (** {!batch} commit failed with too many retries. *)
+  | `No_space                (** No space left on the device. *)
+  | `Too_many_retries of int (** {!batch} has been trying to commit [n] times
+                                 without success. *)
 ]
+
+val pp_write_error: write_error Fmt.t
+(** [pp_write_error] is the pretty-printer for write errors. *)
 
 module type RW = sig
 

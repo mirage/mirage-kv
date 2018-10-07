@@ -71,7 +71,13 @@ module type RO = sig
   val digest: t -> key -> (string, error) result io
 end
 
-type write_error = [ error | `No_space | `Too_many_retries ]
+type write_error = [ error | `No_space | `Too_many_retries of int ]
+
+let pp_write_error ppf = function
+  | #error as e -> pp_error ppf e
+  | `No_space   -> Fmt.pf ppf "No space left on device"
+  | `Too_many_retries n ->
+    Fmt.pf ppf "Aborting after %d attempts to apply the batch operations." n
 
 module type RW = sig
   include RO
