@@ -1,4 +1,5 @@
 (*
+ * Copyright (c) 2018      Stefanie Schirmer, Hannes Mehnert
  * Copyright (c) 2011-2015 Anil Madhavapeddy <anil@recoil.org>
  * Copyright (c) 2013-2015 Thomas Gazagnaire <thomas@gazagnaire.org>
  * Copyright (c) 2013      Citrix Systems Inc
@@ -25,9 +26,9 @@ module type RO = sig
   type error = private [> `Unknown_key of string]
   val pp_error: error Fmt.t
   include Mirage_device.S
-  type page_aligned_buffer
-  val read: t -> string -> int64 -> int64 ->
-    (page_aligned_buffer list, error) result io
+  type buffer
+  val read: t -> string -> ?offset:int64 -> ?length:int64 ->
+    (buffer, error) result io
   val mem: t -> string -> (bool, error) result io
   val size: t -> string -> (int64, error) result io
 end
