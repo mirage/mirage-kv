@@ -205,7 +205,7 @@ module type RW = sig
      enclosing {!batch} operation, where durability will be guaranteed
      at the end of the batch. *)
 
-  val batch: t -> ?retries:int -> (t -> 'a) -> 'a
+  val batch: t -> ?retries:int -> (t -> 'a io) -> 'a io
   (** [batch t f] run [f] in batch. Ensure the durability of
      operations.
 

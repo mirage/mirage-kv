@@ -85,5 +85,5 @@ module type RW = sig
   val pp_write_error: write_error Fmt.t
   val set: t -> key -> value -> (unit, write_error) result io
   val remove: t -> key -> (unit, write_error) result io
-  val batch: t -> ?retries:int -> (t -> 'a) -> 'a
+  val batch: t -> ?retries:int -> (t -> 'a io) -> 'a io
 end
