@@ -150,7 +150,7 @@ module type RO = sig
 
       When the value bound to [k] is a dictionary, the modification
      time is the latest modification of all entries in that
-     dictionary.  *)
+     dictionary. This behaviour is only one level deep and not recursive. *)
 
   val digest: t -> key -> (string, error) result io
   (** [digest t k] is the unique digest of the value bound to [k] in
