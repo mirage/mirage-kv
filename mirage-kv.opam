@@ -1,6 +1,6 @@
 opam-version: "2.0"
 maintainer:   "Thomas Gazagnaire <thomas@gazagnaire.org>"
-authors:      ["Thomas Gazagnaire <thomas@gazagnaire.org>"]
+authors:      ["Thomas Gazagnaire <thomas@gazagnaire.org>" "Stefanie Schirmer" "Hannes Mehnert"]
 homepage:     "https://github.com/mirage/mirage-kv"
 doc:          "https://mirage.github.io/mirage-kv/"
 license:      "ISC"
@@ -11,15 +11,17 @@ tags:         ["org:mirage"]
 build: [
   ["dune" "subst"] {pinned}
   ["dune" "build" "-p" name "-j" jobs]
-]
-build-test: [
-  ["dune" "runtest" "-p" name]
+  ["dune" "runtest" "-p" name] {with-test}
 ]
 depends: [
   "ocaml" {>= "4.05.0"}
   "dune"     {build}
   "mirage-device" {>= "1.0.0"}
   "fmt"
-  "alcotest" {test}
+  "alcotest" {with-test}
 ]
 synopsis: "MirageOS signatures for key/value devices"
+description: """
+mirage-kv provides the `Mirage_kv.RO` and `Mirage_kv.RW`
+signatures the MirageOS key/value devices should implement.
+"""

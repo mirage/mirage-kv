@@ -1,3 +1,17 @@
+### v2.0.0 (2019-02-24)
+
+* Major revision of the `RO` signature:
+ - values are of type `string`
+ - keys are segments instead of a string
+ - `read` is now named `get`, and does no longer take an offset and length
+ - the new function `list` is provided
+ - the new functions `last_modified` and `digest` are provided
+* A module `Key` is provided with convenience functions to build keys
+* An `RW` signature is provided, extending `RO` with
+ - a function `set` to replace a value
+ - a function `remove` to remove a key
+ - `batch` to batch operations
+
 ### v1.1.1 (2017-06-29)
 
 * Remove `open Result` statements (and drop support to 4.02)

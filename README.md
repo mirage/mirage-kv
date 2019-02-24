@@ -1,12 +1,16 @@
 ## mirage-kv — MirageOS signatures for key/value devices
 
-mirage-kv provides the [Mirage_kv.RO][ro] and [Mirage_kv_lwt.RO][ro-lwt]
-signatures the MirageOS key/value devices should implement.
+mirage-kv provides the [Mirage_kv.RO][ro] and [Mirage_kv.RW][rw]
+signatures the MirageOS key/value devices should implement. In addition,
+[Mirage_kv_lwt.RO][ro-lwt] and [Mirage_kv_lwt.RW][rw-lwt] are provided where
+`io` is constrained to `Lwt.t` and `value` to `string`.
 
 mirage-kv is distributed under the ISC license.
 
 [ro]: https://mirage.github.io/mirage-kv/mirage-kv/Mirage_kv/module-type-RO/index.html
+[rw]: https://mirage.github.io/mirage-kv/mirage-kv/Mirage_kv/module-type-RW/index.html
 [ro-lwt]: https://mirage.github.io/mirage-kv/mirage-kv-lwt/Mirage_kv_lwt/index.html#module-type-RO
+[rw-lwt]: https://mirage.github.io/mirage-kv/mirage-kv-lwt/Mirage_kv_lwt/index.html#module-type-RW
 
 [![Build Status](https://travis-ci.org/mirage/mirage-kv.svg?branch=master)](https://travis-ci.org/mirage/mirage-kv)
 
