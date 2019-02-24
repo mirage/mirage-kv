@@ -20,14 +20,14 @@
 
     {e %%VERSION%% } *)
 
-(** {1 Mirage_kv} *)
+(** {2 Mirage_kv} *)
 
 (** MirageOS key-value stores are nested dictionaries, associating
    structured {{!Key}keys} to either dictionaries or values. *)
 
 module Key: sig
 
-  (** {1 Structured keys} *)
+  (** {2 Structured keys} *)
 
   type t
   (** The type for structured keys. *)
@@ -100,7 +100,7 @@ val pp_error: error Fmt.t
 
 module type RO = sig
 
-  (** {1 Read-only key-value stores} *)
+  (** {2 Read-only key-value stores} *)
 
   type nonrec error = private [> error]
   (** The type for errors. *)
@@ -173,7 +173,7 @@ val pp_write_error: write_error Fmt.t
 
 module type RW = sig
 
-  (** {1 Read-write Stores} *)
+  (** {2 Read-write Stores} *)
 
   (** There is a trade-off between durability and performance. If you
      want performance, use the {!batch} operation with a chain of sets
@@ -215,8 +215,8 @@ module type RW = sig
 
       Batch applications can fail to apply if other operations are
      happening concurrently. In case of failure, [f] will run again
-     with the most recent version of [t]. The result is [Error
-     `Too_many_retries] if [f] is run for more then [retries] attemps
+     with the most recent version of [t]. The result is
+     [Error `Too_many_retries] if [f] is run for more then [retries] attemps
      (default is [13]). *)
 
 end
