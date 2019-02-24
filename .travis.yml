@@ -6,6 +6,6 @@ env:
   global:
   - PINS="mirage-kv.dev:. mirage-kv-lwt.dev:."
   matrix:
-  - OCAML_VERSION=4.03 PACKAGE="mirage-kv-lwt"
-  - OCAML_VERSION=4.04 PACKAGE="mirage-kv-lwt"
   - OCAML_VERSION=4.05 PACKAGE="mirage-kv-lwt"
+  - OCAML_VERSION=4.06 PACKAGE="mirage-kv-lwt"
+  - OCAML_VERSION=4.07 PACKAGE="mirage-kv-lwt"
