@@ -1,0 +1,4 @@
+(library
+ (name        mirage_kv_async)
+ (public_name mirage-kv-async)
+ (libraries   mirage-kv async cstruct))
