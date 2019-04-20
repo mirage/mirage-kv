@@ -3,7 +3,7 @@
 mirage-kv provides the [Mirage_kv.RO][ro] and [Mirage_kv.RW][rw]
 signatures the MirageOS key/value devices should implement. In addition, modules
 specialized for use with Lwt and Async are provided where `io` is constrained to `Lwt.t`
-or `Deferred.t` respectively, and `value` is constrainted to `string`:
+or `Deferred.t` respectively, and `value` is constrained to `string`:
 
 - [Mirage_kv_lwt.RO][ro-lwt], [Mirage_kv_lwt.RW][rw-lwt]
 - [Mirage_kv_async.RO][ro-async], [Mirage_kv_async.RW][rw-async]
