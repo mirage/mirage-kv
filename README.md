@@ -6,7 +6,7 @@ specialized for use with Lwt and Async are provided where `io` is constrained to
 or `Deferred.t` respectively, and `value` is constrainted to `string`:
 
 - [Mirage_kv_lwt.RO][ro-lwt], [Mirage_kv_lwt.RW][rw-lwt]
-- [Mirage_kv_async.RO][ro-async] and [Mirage_kv_async.RW][rw-async]
+- [Mirage_kv_async.RO][ro-async], [Mirage_kv_async.RW][rw-async]
 
 mirage-kv is distributed under the ISC license.
 
