@@ -1,3 +1,8 @@
+### v3.0.0
+
+* remove mirage-kv-lwt
+* specialise mirage-kv on Lwt.t and value being string
+
 ### v2.0.0 (2019-02-24)
 
 * Major revision of the `RO` signature:
