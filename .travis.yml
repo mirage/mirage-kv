@@ -5,8 +5,9 @@ script: bash -ex .travis-opam.sh
 env:
   global:
   - PINS="mirage-kv:. mirage-device.2.0.0:git+https://github.com/hannesm/mirage-device.git#easy"
+  - PACKAGE="mirage-kv"
   matrix:
-  - OCAML_VERSION=4.06 PACKAGE="mirage-kv"
-  - OCAML_VERSION=4.07 PACKAGE="mirage-kv"
-  - OCAML_VERSION=4.08 PACKAGE="mirage-kv"
-  - OCAML_VERSION=4.09 PACKAGE="mirage-kv"
+  - OCAML_VERSION=4.06
+  - OCAML_VERSION=4.07
+  - OCAML_VERSION=4.08
+  - OCAML_VERSION=4.09
