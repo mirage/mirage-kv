@@ -1,7 +1,8 @@
-### v3.0.0
+### v3.0.0 (2019-10-22)
 
-* remove mirage-kv-lwt
-* specialise mirage-kv on Lwt.t and value being string
+* remove mirage-kv-lwt (#19 @hannesm)
+* specialise mirage-kv on Lwt.t and value being string (#19 @hannesm)
+* raise lower OCaml bound to 4.06.0 (#19 @hannesm)
 
 ### v2.0.0 (2019-02-24)
 

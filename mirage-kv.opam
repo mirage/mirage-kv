@@ -21,7 +21,6 @@ depends: [
   "lwt" {>= "4.4.0"}
   "alcotest" {with-test}
 ]
-conflicts: [ "mirage-kv-lwt" ]
 synopsis: "MirageOS signatures for key/value devices"
 description: """
 mirage-kv provides the `Mirage_kv.RO` and `Mirage_kv.RW`
