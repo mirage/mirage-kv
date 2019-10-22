@@ -63,12 +63,11 @@ module type RO = sig
   val pp_error: error Fmt.t
   include Mirage_device.S
   type key = Key.t
-  type value
-  val exists: t -> key -> ([`Value | `Dictionary] option, error) result io
-  val get: t -> key -> (value, error) result io
-  val list: t -> key -> ((string * [`Value | `Dictionary]) list, error) result io
-  val last_modified: t -> key -> (int * int64, error) result io
-  val digest: t -> key -> (string, error) result io
+  val exists: t -> key -> ([`Value | `Dictionary] option, error) result Lwt.t
+  val get: t -> key -> (string, error) result Lwt.t
+  val list: t -> key -> ((string * [`Value | `Dictionary]) list, error) result Lwt.t
+  val last_modified: t -> key -> (int * int64, error) result Lwt.t
+  val digest: t -> key -> (string, error) result Lwt.t
 end
 
 type write_error = [ error | `No_space | `Too_many_retries of int ]
@@ -83,7 +82,7 @@ module type RW = sig
   include RO
   type nonrec write_error = private [> write_error]
   val pp_write_error: write_error Fmt.t
-  val set: t -> key -> value -> (unit, write_error) result io
-  val remove: t -> key -> (unit, write_error) result io
-  val batch: t -> ?retries:int -> (t -> 'a io) -> 'a io
+  val set: t -> key -> string -> (unit, write_error) result Lwt.t
+  val remove: t -> key -> (unit, write_error) result Lwt.t
+  val batch: t -> ?retries:int -> (t -> 'a Lwt.t) -> 'a Lwt.t
 end

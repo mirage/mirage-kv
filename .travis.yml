@@ -4,8 +4,9 @@ install: wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.t
 script: bash -ex .travis-opam.sh
 env:
   global:
-  - PINS="mirage-kv.dev:. mirage-kv-lwt.dev:."
+  - PACKAGE="mirage-kv"
   matrix:
-  - OCAML_VERSION=4.05 PACKAGE="mirage-kv-lwt"
-  - OCAML_VERSION=4.06 PACKAGE="mirage-kv-lwt"
-  - OCAML_VERSION=4.07 PACKAGE="mirage-kv-lwt"
+  - OCAML_VERSION=4.06
+  - OCAML_VERSION=4.07
+  - OCAML_VERSION=4.08
+  - OCAML_VERSION=4.09

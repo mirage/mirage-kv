@@ -113,33 +113,30 @@ module type RO = sig
   type key = Key.t
   (** The type for keys. *)
 
-  type value
-  (** The type for values. *)
+  val exists: t -> key -> ([`Value | `Dictionary] option, error) result Lwt.t
+  (** [exists t k] is [Some `Value] if [k] is bound to a value in [t],
+      [Some `Dictionary] if [k] is a prefix of a valid key in [t] and
+      [None] if no key with that prefix exists in [t].
 
- val exists: t -> key -> ([`Value | `Dictionary] option, error) result io
- (** [exists t k] is [Some `Value] if [k] is bound to a value in [t],
-    [Some `Dictionary] if [k] is a prefix of a valid key in [t] and
-    [None] if no key with that prefix exists in [t].
+      {!exists} answers two questions: does the key exist and is it
+      referring to a value or a dictionary.
 
-     {!exists} answers two questions: does the key exist and is it
-    referring to a value or a dictionary.
+      An error occurs when the underlying storage layer fails. *)
 
-     An error occurs when the underlying storage layer fails. *)
+  val get: t -> key -> (string, error) result Lwt.t
+  (** [get t k] is the value bound to [k] in [t].
 
- val get: t -> key -> (value, error) result io
- (** [get t k] is the value bound to [k] in [t].
+      The result is [Error (`Value_expected k)] if [k] refers to a
+      dictionary in [t]. *)
 
-     The result is [Error (`Value_expected k)] if [k] refers to a
-    dictionary in [t]. *)
-
-  val list: t -> key -> ((string * [`Value | `Dictionary]) list, error) result io
+  val list: t -> key -> ((string * [`Value | `Dictionary]) list, error) result Lwt.t
   (** [list t k] is the list of entries and their types in the
      dictionary referenced by [k] in [t].
 
       The result is [Error (`Dictionary_expected k)] if [k] refers to a
      value in [t]. *)
 
-  val last_modified: t -> key -> (int * int64, error) result io
+  val last_modified: t -> key -> (int * int64, error) result Lwt.t
   (** [last_modified t k] is the last time the value bound to [k] in
      [t] has been modified.
 
@@ -152,7 +149,7 @@ module type RO = sig
      time is the latest modification of all entries in that
      dictionary. This behaviour is only one level deep and not recursive. *)
 
-  val digest: t -> key -> (string, error) result io
+  val digest: t -> key -> (string, error) result Lwt.t
   (** [digest t k] is the unique digest of the value bound to [k] in
      [t].
 
@@ -190,14 +187,14 @@ module type RW = sig
   val pp_write_error: write_error Fmt.t
   (** The pretty-printer for [pp_write_error]. *)
 
-  val set: t -> key -> value -> (unit, write_error) result io
+  val set: t -> key -> string -> (unit, write_error) result Lwt.t
   (** [set t k v] replaces the binding [k -> v] in [t].
 
       Durability is guaranteed unless [set] is run inside an enclosing
      {!batch} operation, where durability will be guaranteed at the
      end of the batch. *)
 
-  val remove: t -> key -> (unit, write_error) result io
+  val remove: t -> key -> (unit, write_error) result Lwt.t
   (** [remove t k] removes any binding of [k] in [t]. If [k] was bound
      to a dictionary, the full dictionary will be removed.
 
@@ -205,7 +202,7 @@ module type RW = sig
      enclosing {!batch} operation, where durability will be guaranteed
      at the end of the batch. *)
 
-  val batch: t -> ?retries:int -> (t -> 'a io) -> 'a io
+  val batch: t -> ?retries:int -> (t -> 'a Lwt.t) -> 'a Lwt.t
   (** [batch t f] run [f] in batch. Ensure the durability of
      operations.
 
