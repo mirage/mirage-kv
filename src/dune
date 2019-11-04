@@ -1,4 +1,5 @@
 (library
   (name        mirage_kv)
   (public_name mirage-kv)
-  (libraries   fmt mirage-device))
+  (libraries   fmt mirage-device)
+  (wrapped false))
