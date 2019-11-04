@@ -1,3 +1,7 @@
+## v3.0.1 (2019-11-04)
+
+* provide deprecated Mirage_kv_lwt for smooth transition (#21 @hannesm)
+
 ### v3.0.0 (2019-10-22)
 
 * remove mirage-kv-lwt (#19 @hannesm)
