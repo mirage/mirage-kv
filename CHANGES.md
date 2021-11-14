@@ -1,3 +1,9 @@
+### v4.0.0
+
+* Remove Mirage_kv_lwt module
+* remove mirage-device dependency
+* Adapt to fmt 0.8.7 dependency
+
 ### v3.0.1 (2019-11-04)
 
 * provide deprecated Mirage_kv_lwt for smooth transition (#21 @hannesm)

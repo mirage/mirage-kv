@@ -61,7 +61,8 @@ let pp_error ppf = function
 module type RO = sig
   type nonrec error = private [> error]
   val pp_error: error Fmt.t
-  include Mirage_device.S
+  type t
+  val disconnect: t -> unit Lwt.t
   type key = Key.t
   val exists: t -> key -> ([`Value | `Dictionary] option, error) result Lwt.t
   val get: t -> key -> (string, error) result Lwt.t
