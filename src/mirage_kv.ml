@@ -39,7 +39,7 @@ module Key = struct
   let parent = List.tl
   let compare = compare
   let equal = (=)
-  let pp ppf l = Fmt.pf ppf "/%a" Fmt.(list ~sep:(unit "/") string) (List.rev l)
+  let pp ppf l = Fmt.pf ppf "/%a" Fmt.(list ~sep:(any "/") string) (List.rev l)
   let to_string = Fmt.to_to_string pp
 end
 
