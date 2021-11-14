@@ -108,7 +108,12 @@ module type RO = sig
   val pp_error: error Fmt.t
   (** [pp_error] is the pretty-printer for errors. *)
 
-  include Mirage_device.S
+  type t
+  (** The type representing the internal state of the key-value store. *)
+
+  val disconnect: t -> unit Lwt.t
+  (** Disconnect from the key-value store. While this might take some time to
+      complete, it can never result in an error. *)
 
   type key = Key.t
   (** The type for keys. *)
