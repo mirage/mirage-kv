@@ -1,8 +1,8 @@
-### v4.0.0
+### v4.0.0 (2021-11-15)
 
-* Remove Mirage_kv_lwt module
-* remove mirage-device dependency
-* Adapt to fmt 0.8.7 dependency
+* Remove Mirage_kv_lwt module (#24 @hannesm)
+* remove mirage-device dependency (#24 @hannesm)
+* Adapt to fmt 0.8.7 dependency (#23 @MisterDA)
 
 ### v3.0.1 (2019-11-04)
 
