@@ -35,8 +35,8 @@ module Key = struct
   let append x y = y @ x
   let ( // ) = append
   let segments = List.rev
-  let basename = List.hd
-  let parent = List.tl
+  let basename = function | [] -> "" | hd::_ -> hd
+  let parent = function | _::tl -> tl | [] -> []
   let compare = compare
   let equal = (=)
   let pp ppf l = Fmt.pf ppf "/%a" Fmt.(list ~sep:(unit "/") string) (List.rev l)
