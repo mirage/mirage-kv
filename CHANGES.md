@@ -1,3 +1,7 @@
+### v4.0.1 (2022-02-28)
+
+* Return `/` for `parent /` and `basename /` (@yomimono, @talex5, #25)
+
 ### v4.0.0 (2021-11-15)
 
 * Remove Mirage_kv_lwt module (#24 @hannesm)
