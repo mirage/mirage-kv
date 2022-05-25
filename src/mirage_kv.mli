@@ -134,6 +134,13 @@ module type RO = sig
       The result is [Error (`Value_expected k)] if [k] refers to a
       dictionary in [t]. *)
 
+  val read: t -> key -> int -> int -> (string, error) result Lwt.t
+  (** [read t k o l] is the [l] bytes wide value bound at offset [o] of
+     [k] in [t].
+
+      The result is [Error (`Value_expected k)] if [k] refers to a
+     dictionary in [t]. *)
+
   val list: t -> key -> ((string * [`Value | `Dictionary]) list, error) result Lwt.t
   (** [list t k] is the list of entries and their types in the
      dictionary referenced by [k] in [t].
@@ -160,6 +167,10 @@ module type RO = sig
 
       When the value bound to [k] is a dictionary, the digest is a
      unique and deterministic digest of its entries. *)
+
+  val size: t -> key -> (int, error) result Lwt.t
+  (** [size t k] is the size of [k] in [t]. *)
+
 
 end
 
@@ -199,6 +210,13 @@ module type RW = sig
      {!batch} operation, where durability will be guaranteed at the
      end of the batch. *)
 
+  val write: t -> key -> int -> string -> (unit, write_error) result Lwt.t
+  (** [write t k o v] replaces the part of the value bound to [k] in
+     [t] at offset [o] with [v].
+
+      The result is [Error (`Value_expected k)] if [k] refers to a
+     dictionary in [t]. *)
+
   val remove: t -> key -> (unit, write_error) result Lwt.t
   (** [remove t k] removes any binding of [k] in [t]. If [k] was bound
      to a dictionary, the full dictionary will be removed.
@@ -206,6 +224,11 @@ module type RW = sig
       Durability is guaranteed unless [remove] is run inside an
      enclosing {!batch} operation, where durability will be guaranteed
      at the end of the batch. *)
+
+  val rename: t -> key -> key -> (unit, write_error) result Lwt.t
+  (** [rename t s d] rename [s] to [d] in [t].
+
+      If [d] exists, it is replaced by [s]. *)
 
   val batch: t -> ?retries:int -> (t -> 'a Lwt.t) -> 'a Lwt.t
   (** [batch t f] run [f] in batch. Ensure the durability of
