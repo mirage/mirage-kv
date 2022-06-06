@@ -138,6 +138,10 @@ module type RO = sig
   (** [get_partial t k ~offset ~length] is the [length] bytes wide value
      bound at [offset] of [k] in [t].
 
+      If the size of [k] is less than [offset], [get_partial] returns an
+     empty string.
+      If the size of [k] is less than [offset]+[length], [get_partial]
+     returns a short string.
       The result is [Error (`Value_expected k)] if [k] refers to a
      dictionary in [t]. *)
 
