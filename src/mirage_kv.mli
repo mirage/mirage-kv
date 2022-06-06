@@ -134,9 +134,9 @@ module type RO = sig
       The result is [Error (`Value_expected k)] if [k] refers to a
       dictionary in [t]. *)
 
-  val read: t -> key -> int -> int -> (string, error) result Lwt.t
-  (** [read t k o l] is the [l] bytes wide value bound at offset [o] of
-     [k] in [t].
+  val get_partial: t -> key -> offset:int -> length:int -> (string, error) result Lwt.t
+  (** [get_partial t k ~offset ~length] is the [length] bytes wide value
+     bound at [offset] of [k] in [t].
 
       The result is [Error (`Value_expected k)] if [k] refers to a
      dictionary in [t]. *)
@@ -210,9 +210,15 @@ module type RW = sig
      {!batch} operation, where durability will be guaranteed at the
      end of the batch. *)
 
-  val write: t -> key -> int -> string -> (unit, write_error) result Lwt.t
-  (** [write t k o v] replaces the part of the value bound to [k] in
-     [t] at offset [o] with [v].
+  val set_partial: t -> key -> offset:int -> string -> (unit, write_error) result Lwt.t
+  (** [set_partial t k offset v] attempts to write [v] at [offset] in the
+     value bound to [k] in [t].
+      If [k] contains directories that do not exist, [set_partial] will
+     attempt to create them.
+      If the size of [k] is less than [offset], [set_partial] appends [v]
+     at the end of [k].
+      If the size of [k] is greater than [offset]+length of [v],
+     [set_partial] leaves the last bytes of [k] unchanged.
 
       The result is [Error (`Value_expected k)] if [k] refers to a
      dictionary in [t]. *)
@@ -225,10 +231,18 @@ module type RW = sig
      enclosing {!batch} operation, where durability will be guaranteed
      at the end of the batch. *)
 
-  val rename: t -> key -> key -> (unit, write_error) result Lwt.t
-  (** [rename t s d] rename [s] to [d] in [t].
+  val rename: t -> source:key -> dest:key -> (unit, write_error) result Lwt.t
+  (** [rename t source dest] rename [source] to [dest] in [t].
+      If [source] and [dest] are both bound to values in [t], [dest]
+     is removed and the binding of [source] is moved to [dest].
+      If [dest] is bound to a dictionary in [t], [source] is moved
+     inside [dest]. If [source] is bound to a dictionary, the full
+     dictionary is moved.
 
-      If [d] exists, it is replaced by [s]. *)
+      The result is [Error (`Not_found source)] if [source] does not
+     exists in [t].
+      The result is [Error (`Value_expected source)] if [source] is
+     bound to a dictionary in [t] and [dest] is bound to a value in [t]. *)
 
   val batch: t -> ?retries:int -> (t -> 'a Lwt.t) -> 'a Lwt.t
   (** [batch t f] run [f] in batch. Ensure the durability of
