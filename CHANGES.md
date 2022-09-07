@@ -1,3 +1,11 @@
+### v5.0.0 (2022-09-07)
+
+* Add `get_partial` and `size` to the RO interface (@palainp #28, review by
+  @yomimono @hannesm)
+* Add `set_partial` and `rename` to the RW interface (@palainp #28, review by
+  @yomimono @hannesm)
+* Mirage_kv.Key.pp: escape binary keys (#30 @hannesm)
+
 ### v4.0.1 (2022-02-28)
 
 * Return `/` for `parent /` and `basename /` (@yomimono, @talex5, #25)
