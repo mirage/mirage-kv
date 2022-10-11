@@ -182,6 +182,7 @@ type write_error = [
   | error
   | `No_space (** No space left on the device. *)
   | `Rename_source_prefix of key * key (** The source is a prefix of destination in rename. *)
+  | `Already_present of key (** The key is already present. *)
 ]
 
 val pp_write_error: write_error Fmt.t
@@ -202,6 +203,15 @@ module type RW = sig
 
   val pp_write_error: write_error Fmt.t
   (** The pretty-printer for [pp_write_error]. *)
+
+  val allocate : t -> key -> ?last_modified:(int * int64) -> Optint.Int63.t ->
+    (unit, write_error) result Lwt.t
+  (** [allocate t key ~last_modified size] allocates space for [key] in [t] with
+      the provided [size] and [last_modified]. This is useful for e.g.
+      append-only backends that could still use {!set_partial}. The data will
+      be filled with 0. If [key] already exists, [Error (`Already_present key)]
+      is returned. If there's not enough space, [Error `No_space] is returned.
+  *)
 
   val set: t -> key -> string -> (unit, write_error) result Lwt.t
   (** [set t k v] replaces the binding [k -> v] in [t].

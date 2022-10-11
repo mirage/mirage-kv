@@ -73,7 +73,7 @@ module type RO = sig
   val size: t -> key -> (Optint.Int63.t, error) result Lwt.t
 end
 
-type write_error = [ error | `No_space | `Rename_source_prefix of Key.t * Key.t ]
+type write_error = [ error | `No_space | `Rename_source_prefix of key * key | `Already_present of key ]
 
 let pp_write_error ppf = function
   | #error as e -> pp_error ppf e
@@ -81,11 +81,13 @@ let pp_write_error ppf = function
   | `Rename_source_prefix (src, dest) ->
     Fmt.pf ppf "Rename: source %a is prefix of destination %a"
       Key.pp src Key.pp dest
+  | `Already_present k -> Fmt.pf ppf "Key %a is already present" Key.pp k
 
 module type RW = sig
   include RO
   type nonrec write_error = private [> write_error]
   val pp_write_error: write_error Fmt.t
+  val allocate : t -> key -> ?last_modified:(int * int64) -> Optint.Int63.t -> (unit, write_error) result Lwt.t
   val set: t -> key -> string -> (unit, write_error) result Lwt.t
   val set_partial: t -> key -> offset:Optint.Int63.t -> string -> (unit, write_error) result Lwt.t
   val remove: t -> key -> (unit, write_error) result Lwt.t
