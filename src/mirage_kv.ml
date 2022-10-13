@@ -39,8 +39,8 @@ module Key = struct
   let parent = function | _::tl -> tl | [] -> []
   let compare = compare
   let equal = (=)
-  let pp ppf l = Fmt.(any "/" ++ (list ~sep:(any "/") Dump.string)) ppf (List.rev l)
   let to_string k = "/" ^ String.concat "/" (List.rev k)
+  let pp ppf k = Fmt.string ppf (String.escaped (to_string k))
 end
 
 type key = Key.t
