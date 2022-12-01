@@ -134,7 +134,7 @@ module type RO = sig
       The result is [Error (`Value_expected k)] if [k] refers to a
       dictionary in [t]. *)
 
-  val get_partial: t -> key -> offset:int -> length:int -> (string, error) result Lwt.t
+  val get_partial: t -> key -> offset:Optint.Int63.t -> length:int -> (string, error) result Lwt.t
   (** [get_partial t k ~offset ~length] is the [length] bytes wide value
      bound at [offset] of [k] in [t].
 
@@ -172,7 +172,7 @@ module type RO = sig
       When the value bound to [k] is a dictionary, the digest is a
      unique and deterministic digest of its entries. *)
 
-  val size: t -> key -> (int, error) result Lwt.t
+  val size: t -> key -> (Optint.Int63.t, error) result Lwt.t
   (** [size t k] is the size of [k] in [t]. *)
 
 
@@ -207,7 +207,7 @@ module type RW = sig
 
       Durability is guaranteed. *)
 
-  val set_partial: t -> key -> offset:int -> string -> (unit, write_error) result Lwt.t
+  val set_partial: t -> key -> offset:Optint.Int63.t -> string -> (unit, write_error) result Lwt.t
   (** [set_partial t k offset v] attempts to write [v] at [offset] in the
      value bound to [k] in [t].
       If [k] contains directories that do not exist, [set_partial] will

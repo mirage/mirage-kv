@@ -66,11 +66,11 @@ module type RO = sig
   type key = Key.t
   val exists: t -> key -> ([`Value | `Dictionary] option, error) result Lwt.t
   val get: t -> key -> (string, error) result Lwt.t
-  val get_partial: t -> key -> offset:int -> length:int -> (string, error) result Lwt.t
+  val get_partial: t -> key -> offset:Optint.Int63.t -> length:int -> (string, error) result Lwt.t
   val list: t -> key -> ((string * [`Value | `Dictionary]) list, error) result Lwt.t
   val last_modified: t -> key -> (int * int64, error) result Lwt.t
   val digest: t -> key -> (string, error) result Lwt.t
-  val size: t -> key -> (int, error) result Lwt.t
+  val size: t -> key -> (Optint.Int63.t, error) result Lwt.t
 end
 
 type write_error = [ error | `No_space ]
@@ -84,7 +84,7 @@ module type RW = sig
   type nonrec write_error = private [> write_error]
   val pp_write_error: write_error Fmt.t
   val set: t -> key -> string -> (unit, write_error) result Lwt.t
-  val set_partial: t -> key -> offset:int -> string -> (unit, write_error) result Lwt.t
+  val set_partial: t -> key -> offset:Optint.Int63.t -> string -> (unit, write_error) result Lwt.t
   val remove: t -> key -> (unit, write_error) result Lwt.t
   val rename: t -> source:key -> dest:key -> (unit, write_error) result Lwt.t
 end
