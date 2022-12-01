@@ -67,7 +67,7 @@ module type RO = sig
   val exists: t -> key -> ([`Value | `Dictionary] option, error) result Lwt.t
   val get: t -> key -> (string, error) result Lwt.t
   val get_partial: t -> key -> offset:Optint.Int63.t -> length:int -> (string, error) result Lwt.t
-  val list: t -> key -> ((string * [`Value | `Dictionary]) list, error) result Lwt.t
+  val list: t -> key -> ((key * [`Value | `Dictionary]) list, error) result Lwt.t
   val last_modified: t -> key -> (int * int64, error) result Lwt.t
   val digest: t -> key -> (string, error) result Lwt.t
   val size: t -> key -> (Optint.Int63.t, error) result Lwt.t

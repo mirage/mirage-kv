@@ -145,7 +145,7 @@ module type RO = sig
       The result is [Error (`Value_expected k)] if [k] refers to a
      dictionary in [t]. *)
 
-  val list: t -> key -> ((string * [`Value | `Dictionary]) list, error) result Lwt.t
+  val list: t -> key -> ((key * [`Value | `Dictionary]) list, error) result Lwt.t
   (** [list t k] is the list of entries and their types in the
      dictionary referenced by [k] in [t].
 
