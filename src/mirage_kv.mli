@@ -181,8 +181,6 @@ end
 type write_error = [
   | error
   | `No_space                (** No space left on the device. *)
-  | `Too_many_retries of int (** {!batch} has been trying to commit [n] times
-                                 without success. *)
 ]
 
 val pp_write_error: write_error Fmt.t
@@ -192,11 +190,8 @@ module type RW = sig
 
   (** {2 Read-write Stores} *)
 
-  (** There is a trade-off between durability and performance. If you
-     want performance, use the {!batch} operation with a chain of sets
-     and removes. They will be applied on the underlying storage layer
-     all at once. Otherwise {!set} and {!remove} will cause a flush in
-     the underlying storage layer every time, which could degrade
+  (** The functions {!set} and {!remove} will cause a flush in
+     the underlying storage layer every time, which can degrade
      performance. *)
 
   include RO
@@ -210,9 +205,7 @@ module type RW = sig
   val set: t -> key -> string -> (unit, write_error) result Lwt.t
   (** [set t k v] replaces the binding [k -> v] in [t].
 
-      Durability is guaranteed unless [set] is run inside an enclosing
-     {!batch} operation, where durability will be guaranteed at the
-     end of the batch. *)
+      Durability is guaranteed. *)
 
   val set_partial: t -> key -> offset:int -> string -> (unit, write_error) result Lwt.t
   (** [set_partial t k offset v] attempts to write [v] at [offset] in the
@@ -231,9 +224,7 @@ module type RW = sig
   (** [remove t k] removes any binding of [k] in [t]. If [k] was bound
      to a dictionary, the full dictionary will be removed.
 
-      Durability is guaranteed unless [remove] is run inside an
-     enclosing {!batch} operation, where durability will be guaranteed
-     at the end of the batch. *)
+      Durability is guaranteed. *)
 
   val rename: t -> source:key -> dest:key -> (unit, write_error) result Lwt.t
   (** [rename t source dest] rename [source] to [dest] in [t].
@@ -247,19 +238,4 @@ module type RW = sig
      exists in [t].
       The result is [Error (`Value_expected source)] if [source] is
      bound to a dictionary in [t] and [dest] is bound to a value in [t]. *)
-
-  val batch: t -> ?retries:int -> (t -> 'a Lwt.t) -> 'a Lwt.t
-  (** [batch t f] run [f] in batch. Ensure the durability of
-     operations.
-
-      Since a batch is applied at once, the readings inside a batch
-     will return the state before the entire batch. Concurrent
-     operations will not affect other ones executed during the batch.
-
-      Batch applications can fail to apply if other operations are
-     happening concurrently. In case of failure, [f] will run again
-     with the most recent version of [t]. The result is
-     [Error `Too_many_retries] if [f] is run for more then [retries] attemps
-     (default is [13]). *)
-
 end

@@ -73,13 +73,11 @@ module type RO = sig
   val size: t -> key -> (int, error) result Lwt.t
 end
 
-type write_error = [ error | `No_space | `Too_many_retries of int ]
+type write_error = [ error | `No_space ]
 
 let pp_write_error ppf = function
   | #error as e -> pp_error ppf e
   | `No_space   -> Fmt.pf ppf "No space left on device"
-  | `Too_many_retries n ->
-    Fmt.pf ppf "Aborting after %d attempts to apply the batch operations." n
 
 module type RW = sig
   include RO
@@ -89,5 +87,4 @@ module type RW = sig
   val set_partial: t -> key -> offset:int -> string -> (unit, write_error) result Lwt.t
   val remove: t -> key -> (unit, write_error) result Lwt.t
   val rename: t -> source:key -> dest:key -> (unit, write_error) result Lwt.t
-  val batch: t -> ?retries:int -> (t -> 'a Lwt.t) -> 'a Lwt.t
 end
