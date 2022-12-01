@@ -73,11 +73,14 @@ module type RO = sig
   val size: t -> key -> (Optint.Int63.t, error) result Lwt.t
 end
 
-type write_error = [ error | `No_space ]
+type write_error = [ error | `No_space | `Rename_source_prefix of Key.t * Key.t ]
 
 let pp_write_error ppf = function
   | #error as e -> pp_error ppf e
-  | `No_space   -> Fmt.pf ppf "No space left on device"
+  | `No_space   -> Fmt.string ppf "No space left on device"
+  | `Rename_source_prefix (src, dest) ->
+    Fmt.pf ppf "Rename: source %a is prefix of destination %a"
+      Key.pp src Key.pp dest
 
 module type RW = sig
   include RO

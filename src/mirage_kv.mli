@@ -180,7 +180,8 @@ end
 
 type write_error = [
   | error
-  | `No_space                (** No space left on the device. *)
+  | `No_space (** No space left on the device. *)
+  | `Rename_source_prefix of key * key (** The source is a prefix of destination in rename. *)
 ]
 
 val pp_write_error: write_error Fmt.t
@@ -237,5 +238,8 @@ module type RW = sig
       The result is [Error (`Not_found source)] if [source] does not
      exists in [t].
       The result is [Error (`Value_expected source)] if [source] is
-     bound to a dictionary in [t] and [dest] is bound to a value in [t]. *)
+     bound to a dictionary in [t] and [dest] is bound to a value in [t].
+      The result id [Error (`Rename_source_prefix (source, dest))] if [source]
+     is a prefix of [dest], and [source] is a directory.
+ *)
 end
