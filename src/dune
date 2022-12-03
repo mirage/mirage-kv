@@ -1,4 +1,4 @@
 (library
   (name        mirage_kv)
   (public_name mirage-kv)
-  (libraries   fmt optint lwt))
+  (libraries   fmt optint lwt ptime))

@@ -68,7 +68,7 @@ module type RO = sig
   val get: t -> key -> (string, error) result Lwt.t
   val get_partial: t -> key -> offset:Optint.Int63.t -> length:int -> (string, error) result Lwt.t
   val list: t -> key -> ((key * [`Value | `Dictionary]) list, error) result Lwt.t
-  val last_modified: t -> key -> (int * int64, error) result Lwt.t
+  val last_modified: t -> key -> (Ptime.t, error) result Lwt.t
   val digest: t -> key -> (string, error) result Lwt.t
   val size: t -> key -> (Optint.Int63.t, error) result Lwt.t
 end
@@ -87,7 +87,7 @@ module type RW = sig
   include RO
   type nonrec write_error = private [> write_error]
   val pp_write_error: write_error Fmt.t
-  val allocate : t -> key -> ?last_modified:(int * int64) -> Optint.Int63.t -> (unit, write_error) result Lwt.t
+  val allocate : t -> key -> ?last_modified:Ptime.t -> Optint.Int63.t -> (unit, write_error) result Lwt.t
   val set: t -> key -> string -> (unit, write_error) result Lwt.t
   val set_partial: t -> key -> offset:Optint.Int63.t -> string -> (unit, write_error) result Lwt.t
   val remove: t -> key -> (unit, write_error) result Lwt.t

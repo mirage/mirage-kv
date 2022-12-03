@@ -152,14 +152,9 @@ module type RO = sig
       The result is [Error (`Dictionary_expected k)] if [k] refers to a
      value in [t]. *)
 
-  val last_modified: t -> key -> (int * int64, error) result Lwt.t
+  val last_modified: t -> key -> (Ptime.t, error) result Lwt.t
   (** [last_modified t k] is the last time the value bound to [k] in
      [t] has been modified.
-
-      The modification time [(d, ps)] is a span for the signed POSIX
-     picosecond span [d] * 86_400e12 + [ps]. [d] is a signed number of
-     POSIX days and [ps] a number of picoseconds in the range
-     \[[0];[86_399_999_999_999_999L]\].
 
       When the value bound to [k] is a dictionary, the modification
      time is the latest modification of all entries in that
@@ -204,7 +199,7 @@ module type RW = sig
   val pp_write_error: write_error Fmt.t
   (** The pretty-printer for [pp_write_error]. *)
 
-  val allocate : t -> key -> ?last_modified:(int * int64) -> Optint.Int63.t ->
+  val allocate : t -> key -> ?last_modified:Ptime.t -> Optint.Int63.t ->
     (unit, write_error) result Lwt.t
   (** [allocate t key ~last_modified size] allocates space for [key] in [t] with
       the provided [size] and [last_modified]. This is useful for e.g.
