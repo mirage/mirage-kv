@@ -66,28 +66,28 @@ module type RO = sig
   type key = Key.t
   val exists: t -> key -> ([`Value | `Dictionary] option, error) result Lwt.t
   val get: t -> key -> (string, error) result Lwt.t
-  val get_partial: t -> key -> offset:int -> length:int -> (string, error) result Lwt.t
-  val list: t -> key -> ((string * [`Value | `Dictionary]) list, error) result Lwt.t
+  val get_partial: t -> key -> offset:Optint.Int63.t -> length:int -> (string, error) result Lwt.t
+  val list: t -> key -> ((key * [`Value | `Dictionary]) list, error) result Lwt.t
   val last_modified: t -> key -> (int * int64, error) result Lwt.t
   val digest: t -> key -> (string, error) result Lwt.t
-  val size: t -> key -> (int, error) result Lwt.t
+  val size: t -> key -> (Optint.Int63.t, error) result Lwt.t
 end
 
-type write_error = [ error | `No_space | `Too_many_retries of int ]
+type write_error = [ error | `No_space | `Rename_source_prefix of Key.t * Key.t ]
 
 let pp_write_error ppf = function
   | #error as e -> pp_error ppf e
-  | `No_space   -> Fmt.pf ppf "No space left on device"
-  | `Too_many_retries n ->
-    Fmt.pf ppf "Aborting after %d attempts to apply the batch operations." n
+  | `No_space   -> Fmt.string ppf "No space left on device"
+  | `Rename_source_prefix (src, dest) ->
+    Fmt.pf ppf "Rename: source %a is prefix of destination %a"
+      Key.pp src Key.pp dest
 
 module type RW = sig
   include RO
   type nonrec write_error = private [> write_error]
   val pp_write_error: write_error Fmt.t
   val set: t -> key -> string -> (unit, write_error) result Lwt.t
-  val set_partial: t -> key -> offset:int -> string -> (unit, write_error) result Lwt.t
+  val set_partial: t -> key -> offset:Optint.Int63.t -> string -> (unit, write_error) result Lwt.t
   val remove: t -> key -> (unit, write_error) result Lwt.t
   val rename: t -> source:key -> dest:key -> (unit, write_error) result Lwt.t
-  val batch: t -> ?retries:int -> (t -> 'a Lwt.t) -> 'a Lwt.t
 end
