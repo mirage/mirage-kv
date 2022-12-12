@@ -1,3 +1,16 @@
+### v6.0.0 (2022-12-12)
+
+* Use ptime directly for RO.last_modified, instead of the int * int64 pair
+  (#34)
+* Add RW.allocate to allocate a key and fill it with zero bytes (#34)
+* RO.list: return Key.t instead of string (#37, fixes #33)
+* Introduce a custom error for RW.rename with a source which is a prefix of
+  destination (#37, fixes #31)
+* Use Optint.Int63.t for RO.size, RO.get_partial, RO.set_partial (#37, fixes #32)
+* Remove RW.batch (#37, fixes #29 #36, discussed at the MirageOS meeting in
+  November, and on the mirageos-devel mailing list in January 2022)
+* Key.pp: escape the entire string, not individual fragments (#35)
+
 ### v5.0.0 (2022-09-07)
 
 * Add `get_partial` and `size` to the RO interface (@palainp #28, review by
