@@ -147,7 +147,8 @@ module type RO = sig
 
   val list: t -> key -> ((key * [`Value | `Dictionary]) list, error) result Lwt.t
   (** [list t k] is the list of entries and their types in the
-     dictionary referenced by [k] in [t].
+     dictionary referenced by [k] in [t]. The returned keys are all absolute
+     (i.e. [Key.add k entry]).
 
       The result is [Error (`Dictionary_expected k)] if [k] refers to a
      value in [t]. *)
