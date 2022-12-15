@@ -1,3 +1,10 @@
+### v6.0.1 (2022-12-15)
+
+* Specify in RO.list that the returned list consists of keys being absolute, and
+  kinds (#38 #39 @reynir @hannesm)
+* BREAKING: Before 6.0.0, the return type of RO.list consisted of a string and
+  kind list, where the string was relative. Now it is absolute.
+
 ### v6.0.0 (2022-12-12)
 
 * Use ptime directly for RO.last_modified, instead of the int * int64 pair
