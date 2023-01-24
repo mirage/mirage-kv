@@ -22,7 +22,7 @@ let path_add () =
     try
       let _ = Key.(v p / b) in
       Alcotest.failf "%s is not a valid segment, should fail" b
-    with Failure _ -> ()
+    with Invalid_argument _ -> ()
   in
   check ""         "bar"  "/bar";
   check "/"        "foo"  "/foo";
