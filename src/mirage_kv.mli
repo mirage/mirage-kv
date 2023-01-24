@@ -43,11 +43,14 @@ module Key: sig
      equal. *)
 
   val add : t -> string -> t
-  (** [add t s] is the concatenated key [t/s]. Raise
-     [Invalid_argument] if [s] contains ["/"]. *)
+  (** [add t s] is the concatenated key [t/s].
+
+      @raise Invalid_argument if [s] contains ['/']. *)
 
   val ( / ) : t -> string -> t
-  (** [t / x] is [add t x]. *)
+  (** [t / x] is [add t x].
+
+      @raise Invalid_argument if [s] contains ['/']. *)
 
   val append : t -> t -> t
   (** [append x y] is the concatenated key [x/y]. *)

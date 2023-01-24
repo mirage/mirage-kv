@@ -22,7 +22,7 @@ module Key = struct
   (* Store the path as a reverse list to optimise basename and (/)
      operations *)
 
-  let err_invalid_segment x = Fmt.failwith "%S is not a valid segment" x
+  let err_invalid_segment x = Fmt.kstr invalid_arg "%S is not a valid segment" x
 
   let check_segment x =
     String.iter (function '/' -> err_invalid_segment x | _ -> ()) x;
