@@ -1,3 +1,8 @@
+### v6.1.0 (2023-01-31)
+
+* Mirage_kv.Key.add now raises Invalid_argument (instead of Failure). Document
+  that it raises (#40 @reynir)
+
 ### v6.0.1 (2022-12-15)
 
 * Specify in RO.list that the returned list consists of keys being absolute, and
