@@ -20,7 +20,7 @@ depends: [
   "lwt" {>= "4.0.0"}
   "optint" {>= "0.2.0"}
   "ptime" {>= "1.0.0"}
-  "alcotest" {with-test}
+  "alcotest" {with-test & >= "0.8.1"}
 ]
 synopsis: "MirageOS signatures for key/value devices"
 description: """
