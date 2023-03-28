@@ -168,8 +168,9 @@ module type RO = sig
   (** [digest t k] is the unique digest of the value bound to [k] in
      [t].
 
-      When the value bound to [k] is a dictionary, the digest is a
-     unique and deterministic digest of its entries. *)
+      When the value bound to [k] is a dictionary, the implementation is
+      allowed to return [Error `Value_expected]. Otherwise, the digest is a
+      unique and deterministic digest of its entries. *)
 
   val size: t -> key -> (Optint.Int63.t, error) result Lwt.t
   (** [size t k] is the size of [k] in [t]. *)
