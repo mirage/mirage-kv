@@ -1,4 +1,4 @@
-### Unreleased
+### v6.1.1 (2023-03-29)
 
 * Leave it up to implementations how to interpret `last_modified` for
   dictionaries, or even not implement it (then returning ``Error
@@ -6,6 +6,9 @@
   dictionary doesn't contain any values directly, and some implementations
   implements `last_modified` differently from the description on dictionaries.
   (reported in #41, fixed in #42 by @reynir)
+* Leave it up to implemetations how to interpret `digest` for dictionaries,
+  or even not implement it (returning ``Error (`Value_expected _)``.
+  (reported mirage/ocaml-tar#111, fixed in #43 by @reynir)
 
 ### v6.1.0 (2023-01-31)
 
