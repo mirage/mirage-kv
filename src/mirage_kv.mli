@@ -160,9 +160,9 @@ module type RO = sig
   (** [last_modified t k] is the last time the value bound to [k] in
      [t] has been modified.
 
-      When the value bound to [k] is a dictionary, the modification
-     time is the latest modification of all entries in that
-     dictionary. This behaviour is only one level deep and not recursive. *)
+      When the value bound to [k] is a dictionary, the implementation is free
+      to decide how to compute a last modified timestamp, or return [Error
+      (`Value_expected _)]. *)
 
   val digest: t -> key -> (string, error) result Lwt.t
   (** [digest t k] is the unique digest of the value bound to [k] in

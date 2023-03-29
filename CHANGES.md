@@ -1,3 +1,12 @@
+### Unreleased
+
+* Leave it up to implementations how to interpret `last_modified` for
+  dictionaries, or even not implement it (then returning ``Error
+  (`Value_expected _)``. The previous definition was not well founded when the
+  dictionary doesn't contain any values directly, and some implementations
+  implements `last_modified` differently from the description on dictionaries.
+  (reported in #41, fixed in #42 by @reynir)
+
 ### v6.1.0 (2023-01-31)
 
 * Mirage_kv.Key.add now raises Invalid_argument (instead of Failure). Document
