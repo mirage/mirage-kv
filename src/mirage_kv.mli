@@ -166,11 +166,12 @@ module type RO = sig
 
   val digest: t -> key -> (string, error) result Lwt.t
   (** [digest t k] is the unique digest of the value bound to [k] in
-     [t].
+      [t]. The digest uses all bits and is not expected to be printable. If
+      desired, a conversion to hexadecimal encoding should be done.
 
       When the value bound to [k] is a dictionary, the implementation is
-      allowed to return [Error (`Value_expected _)]. Otherwise, the [digest] is a
-      unique and deterministic digest of its entries. *)
+      allowed to return [Error (`Value_expected _)]. Otherwise, the [digest] is
+      a unique and deterministic digest of its entries. *)
 
   val size: t -> key -> (Optint.Int63.t, error) result Lwt.t
   (** [size t k] is the size of [k] in [t]. *)
