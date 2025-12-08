@@ -27,3 +27,4 @@ description: """
 mirage-kv provides the `Mirage_kv.RO` and `Mirage_kv.RW`
 signatures the MirageOS key/value devices should implement.
 """
+x-maintenance-intent: ["(latest)"]
